@@ -21,7 +21,17 @@
 #ifndef GLOBALS_VOLATILE_BROGUE_H
 #define GLOBALS_VOLATILE_BROGUE_H
 
+typedef enum volatileClass {
+    VOLATILE_CLASS_NONE = 0,
+    VOLATILE_CLASS_BARBARIAN,
+    VOLATILE_CLASS_NINJA,
+    VOLATILE_CLASS_WIZARD,
+} volatileClass;
+
 void initializeGameVariantVolatileBrogue(void);
+
+void setVolatileBrogueClass(volatileClass selection);
+volatileClass getVolatileBrogueClass(void);
 
 // Version string displayed to players and tools.
 extern const char *volatileBrogueVersion;
