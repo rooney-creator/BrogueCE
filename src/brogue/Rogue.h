@@ -30,6 +30,7 @@
 #include <stdint.h>
 #include <time.h>
 #include "PlatformDefines.h"
+#include "GlobalsVolatileBrogue.h"
 
 // unicode: comment this line to revert to ASCII
 #define USE_UNICODE
@@ -2429,6 +2430,7 @@ typedef struct gameConstants {
 // these are basically global variables pertaining to the game state and player's unique variables:
 typedef struct playerCharacter {
     boolean wizard;                     // in wizard mode
+    volatileClass volatileClass;        // class selection for Volatile Brogue
 
     short depthLevel;                   // which dungeon level are we on
     short deepestLevel;

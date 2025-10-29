@@ -172,6 +172,35 @@ static void welcome() {
     flavorMessage("The doors to the dungeon slam shut behind you.");
 }
 
+static void giveStartingWeapon(short weaponKind) {
+    item *weapon = generateItem(WEAPON, weaponKind);
+    weapon->enchant1 = 0;
+    weapon->enchant2 = 0;
+    weapon->flags &= ~(ITEM_CURSED | ITEM_RUNIC);
+    identify(weapon);
+    weapon = addItemToPack(weapon);
+    equipItem(weapon, false, NULL);
+}
+
+static void giveStartingDarts(short quantity) {
+    item *darts = generateItem(WEAPON, DART);
+    darts->enchant1 = 0;
+    darts->enchant2 = 0;
+    darts->quantity = quantity;
+    darts->flags &= ~(ITEM_CURSED | ITEM_RUNIC);
+    identify(darts);
+    addItemToPack(darts);
+}
+
+static void giveVolatileWizardStaff(short staffKind, short minimumCharges) {
+    item *staff = generateItem(STAFF, staffKind);
+    staff->enchant1 = 0;
+    staff->flags &= ~(ITEM_CURSED | ITEM_RUNIC);
+    staff->charges = max(staff->charges, minimumCharges);
+    identify(staff);
+    addItemToPack(staff);
+}
+
 void initializeGameVariant() {
 
     switch (gameVariant) {
@@ -195,6 +224,7 @@ void initializeGameVariant() {
 void initializeRogue(uint64_t seed) {
     short i, j, k;
     item *theItem;
+    volatileClass selectedVolatileClass = getVolatileBrogueClass();
     boolean playingback, playbackFF, playbackPaused, wizard, easy, displayStealthRangeMode;
     boolean trueColorMode;
     boolean hideSeed;
@@ -225,6 +255,14 @@ void initializeRogue(uint64_t seed) {
     rogue.easyMode = easy;
     rogue.displayStealthRangeMode = displayStealthRangeMode;
     rogue.trueColorMode = trueColorMode;
+
+    if (gameVariant == VARIANT_VOLATILE_BROGUE) {
+        rogue.volatileClass = (selectedVolatileClass == VOLATILE_CLASS_NONE)
+                                  ? VOLATILE_CLASS_NINJA
+                                  : selectedVolatileClass;
+    } else {
+        rogue.volatileClass = VOLATILE_CLASS_NONE;
+    }
 
     rogue.gameHasEnded = false;
     rogue.gameInProgress = true;
@@ -426,19 +464,28 @@ void initializeRogue(uint64_t seed) {
     theItem = generateItem(FOOD, RATION);
     theItem = addItemToPack(theItem);
 
-    theItem = generateItem(WEAPON, DAGGER);
-    theItem->enchant1 = theItem->enchant2 = 0;
-    theItem->flags &= ~(ITEM_CURSED | ITEM_RUNIC);
-    identify(theItem);
-    theItem = addItemToPack(theItem);
-    equipItem(theItem, false, NULL);
-
-    theItem = generateItem(WEAPON, DART);
-    theItem->enchant1 = theItem->enchant2 = 0;
-    theItem->quantity = 15;
-    theItem->flags &= ~(ITEM_CURSED | ITEM_RUNIC);
-    identify(theItem);
-    theItem = addItemToPack(theItem);
+    if (gameVariant == VARIANT_VOLATILE_BROGUE) {
+        switch (rogue.volatileClass) {
+            case VOLATILE_CLASS_BARBARIAN:
+                giveStartingWeapon(AXE);
+                break;
+            case VOLATILE_CLASS_WIZARD:
+                giveStartingWeapon(DAGGER);
+                giveStartingDarts(15);
+                giveVolatileWizardStaff(STAFF_FIRE, 3);
+                giveVolatileWizardStaff(STAFF_BLINKING, 3);
+                giveVolatileWizardStaff(STAFF_OBSTRUCTION, 3);
+                break;
+            case VOLATILE_CLASS_NINJA:
+            default:
+                giveStartingWeapon(DAGGER);
+                giveStartingDarts(15);
+                break;
+        }
+    } else {
+        giveStartingWeapon(DAGGER);
+        giveStartingDarts(15);
+    }
 
     theItem = generateItem(ARMOR, LEATHER_ARMOR);
     theItem->enchant1 = 0;

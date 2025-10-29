@@ -98,6 +98,15 @@ _Static_assert(sizeof(mutableGameConstants) == sizeof(gameConstants),
                "mutableGameConstants must mirror gameConstants");
 
 static mutableGameConstants volatileBrogueGameConst;
+static volatileClass volatileBrogueClassSelection = VOLATILE_CLASS_NONE;
+
+void setVolatileBrogueClass(volatileClass selection) {
+    volatileBrogueClassSelection = selection;
+}
+
+volatileClass getVolatileBrogueClass(void) {
+    return volatileBrogueClassSelection;
+}
 
 void initializeGameVariantVolatileBrogue() {
     // Start with the baseline Brogue setup so we can reuse all the existing
@@ -158,6 +167,9 @@ void initializeGameVariantVolatileBrogue() {
 
     volatileBrogueGameConst.deepestLevelForMachines = AMULET_LEVEL;
     volatileBrogueGameConst.companionFeatRequiredXP = 8400;
+
+    // Reset any pending class selection until the player picks one.
+    setVolatileBrogueClass(VOLATILE_CLASS_NONE);
 
     // Point the global pointer at our tailored copy.
     gameConst = (const gameConstants *) &volatileBrogueGameConst;
