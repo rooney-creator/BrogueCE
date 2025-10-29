@@ -197,7 +197,6 @@ static void giveVolatileWizardStaff(short staffKind, short minimumCharges) {
     staff->enchant1 = 0;
     staff->flags &= ~(ITEM_CURSED | ITEM_RUNIC);
     staff->charges = max(staff->charges, minimumCharges);
-    staff->enchant1 = staff->charges;
     identify(staff);
     addItemToPack(staff);
 }

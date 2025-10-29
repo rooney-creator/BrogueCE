@@ -487,24 +487,22 @@ static boolean chooseVolatileBrogueClass() {
     snprintf(textBuf, TEXT_MAX_LENGTH, "%sChoose your fate in the volatile dungeon%s\n", goldColorEscape, whiteColorEscape);
     append(textBuf, "Select a starting class to shape your opening equipment.\n\n", TEXT_MAX_LENGTH);
 
-    snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sWizard%s\n", goldColorEscape, whiteColorEscape);
+    snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sBarbarian%s\n", goldColorEscape, whiteColorEscape);
     append(textBuf, tmpBuf, TEXT_MAX_LENGTH);
-    append(textBuf, "Begin with a trio of volatile staves to bend the dungeon to your will.\n", TEXT_MAX_LENGTH);
-
-    append(textBuf, "\n", TEXT_MAX_LENGTH);
+    append(textBuf, "Start with a brutal axe, ready to cleave through early threats.\n\n", TEXT_MAX_LENGTH);
 
     snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sNinja%s\n", goldColorEscape, whiteColorEscape);
     append(textBuf, tmpBuf, TEXT_MAX_LENGTH);
     append(textBuf, "Rely on a trusty dagger and a pouch of darts for precision strikes.\n\n", TEXT_MAX_LENGTH);
 
-    snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sBarbarian%s\n", goldColorEscape, whiteColorEscape);
+    snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sWizard%s\n", goldColorEscape, whiteColorEscape);
     append(textBuf, tmpBuf, TEXT_MAX_LENGTH);
-    append(textBuf, "Start with a brutal axe, ready to cleave through early threats.\n", TEXT_MAX_LENGTH);
+    append(textBuf, "Begin with a trio of volatile staves to bend the dungeon to your will.\n", TEXT_MAX_LENGTH);
 
     brogueButton buttons[3];
-    initializeMainMenuButton(&(buttons[0]), "     %sW%sizard     ", 'w', 'W', NG_NOTHING);
+    initializeMainMenuButton(&(buttons[0]), "    %sB%sarbarian    ", 'b', 'B', NG_NOTHING);
     initializeMainMenuButton(&(buttons[1]), "      %sN%sinja      ", 'n', 'N', NG_NOTHING);
-    initializeMainMenuButton(&(buttons[2]), "    %sB%sarbarian    ", 'b', 'B', NG_NOTHING);
+    initializeMainMenuButton(&(buttons[2]), "     %sW%sizard     ", 'w', 'W', NG_NOTHING);
 
     const SavedDisplayBuffer rbuf = saveDisplayBuffer();
     short choice = printTextBox(textBuf, 10, 6, 66, &white, &black, buttons, 3);
@@ -516,13 +514,13 @@ static boolean chooseVolatileBrogueClass() {
 
     switch (choice) {
         case 0:
-            setVolatileBrogueClass(VOLATILE_CLASS_WIZARD);
+            setVolatileBrogueClass(VOLATILE_CLASS_BARBARIAN);
             return true;
         case 1:
             setVolatileBrogueClass(VOLATILE_CLASS_NINJA);
             return true;
         case 2:
-            setVolatileBrogueClass(VOLATILE_CLASS_BARBARIAN);
+            setVolatileBrogueClass(VOLATILE_CLASS_WIZARD);
             return true;
         default:
             return false;
