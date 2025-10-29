@@ -476,6 +476,57 @@ static void chooseGameMode() {
     rogue.nextGame = NG_NOTHING;
 }
 
+static boolean chooseVolatileBrogueClass() {
+    char textBuf[TEXT_MAX_LENGTH] = "", tmpBuf[TEXT_MAX_LENGTH] = "", goldColorEscape[5] = "", whiteColorEscape[5] = "";
+
+    encodeMessageColor(goldColorEscape, 0, &yellow);
+    encodeMessageColor(whiteColorEscape, 0, &white);
+
+    setVolatileBrogueClass(VOLATILE_CLASS_NONE);
+
+    snprintf(textBuf, TEXT_MAX_LENGTH, "%sChoose your fate in the volatile dungeon%s\n", goldColorEscape, whiteColorEscape);
+    append(textBuf, "Select a starting class to shape your opening equipment.\n\n", TEXT_MAX_LENGTH);
+
+    snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sBarbarian%s\n", goldColorEscape, whiteColorEscape);
+    append(textBuf, tmpBuf, TEXT_MAX_LENGTH);
+    append(textBuf, "Start with a brutal axe, ready to cleave through early threats.\n\n", TEXT_MAX_LENGTH);
+
+    snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sNinja%s\n", goldColorEscape, whiteColorEscape);
+    append(textBuf, tmpBuf, TEXT_MAX_LENGTH);
+    append(textBuf, "Rely on a trusty dagger and a pouch of darts for precision strikes.\n\n", TEXT_MAX_LENGTH);
+
+    snprintf(tmpBuf, TEXT_MAX_LENGTH, "%sWizard%s\n", goldColorEscape, whiteColorEscape);
+    append(textBuf, tmpBuf, TEXT_MAX_LENGTH);
+    append(textBuf, "Begin with a trio of volatile staves to bend the dungeon to your will.\n", TEXT_MAX_LENGTH);
+
+    brogueButton buttons[3];
+    initializeMainMenuButton(&(buttons[0]), "    %sB%sarbarian    ", 'b', 'B', NG_NOTHING);
+    initializeMainMenuButton(&(buttons[1]), "      %sN%sinja      ", 'n', 'N', NG_NOTHING);
+    initializeMainMenuButton(&(buttons[2]), "     %sW%sizard     ", 'w', 'W', NG_NOTHING);
+
+    const SavedDisplayBuffer rbuf = saveDisplayBuffer();
+    short choice = printTextBox(textBuf, 10, 6, 66, &white, &black, buttons, 3);
+    restoreDisplayBuffer(&rbuf);
+
+    if (choice < 0) {
+        return false;
+    }
+
+    switch (choice) {
+        case 0:
+            setVolatileBrogueClass(VOLATILE_CLASS_BARBARIAN);
+            return true;
+        case 1:
+            setVolatileBrogueClass(VOLATILE_CLASS_NINJA);
+            return true;
+        case 2:
+            setVolatileBrogueClass(VOLATILE_CLASS_WIZARD);
+            return true;
+        default:
+            return false;
+    }
+}
+
 /// @brief Used on the title screen for showing/hiding the flyout menus
 /// @return True if rogue.nextGame is a flyout command
 static boolean isFlyoutActive() {
@@ -1181,6 +1232,15 @@ void mainBrogueJunction() {
                     }
                 } else {
                     rogue.nextGameSeed = 0; // Seed based on clock.
+                }
+
+                if (gameVariant == VARIANT_VOLATILE_BROGUE) {
+                    if (!chooseVolatileBrogueClass()) {
+                        rogue.nextGame = NG_NOTHING;
+                        break;
+                    }
+                } else {
+                    setVolatileBrogueClass(VOLATILE_CLASS_NONE);
                 }
 
                 rogue.nextGame = NG_NOTHING;
