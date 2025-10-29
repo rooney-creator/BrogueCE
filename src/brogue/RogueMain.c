@@ -194,9 +194,10 @@ static void giveStartingDarts(short quantity) {
 
 static void giveVolatileWizardStaff(short staffKind, short minimumCharges) {
     item *staff = generateItem(STAFF, staffKind);
-    staff->enchant1 = 0;
     staff->flags &= ~(ITEM_CURSED | ITEM_RUNIC);
-    staff->charges = max(staff->charges, minimumCharges);
+    const short charges = max(staff->charges, minimumCharges);
+    staff->charges = charges;
+    staff->enchant1 = charges;
     identify(staff);
     addItemToPack(staff);
 }
